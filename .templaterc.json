@@ -1,7 +1,6 @@
 {
     "files": [
-        "recipe/*.py",
-        "recipe/Dockerfile",
+        "recipe/*",
         "history/README.md",
         ".github/**/*.yaml",
         "environment.yaml"
