@@ -13,7 +13,7 @@ jobs:
   template-update:
     name: Template Update
     runs-on: ubuntu-20.04
-    # if: github.repository != 'ooi-data/stream_template'
+    if: github.repository != 'ooi-data/stream_template'
     steps:
       - uses: actions/checkout@v2
         with:
@@ -57,15 +57,15 @@ jobs:
         shell: bash -l {0}
         run: |
           which npx
-          # npx update-template https://github.com/${{ env.TEMPLATE_REPO }}
-      # - name: Commit changes
-      #   id: auto-commit-action
-      #   uses: stefanzweifel/git-auto-commit-action@v4
-      #   with:
-      #     commit_message: Updating repository from template
-      # - name: "Run if changes have been detected"
-      #   if: steps.auto-commit-action.outputs.changes_detected == 'true'
-      #   run: echo "Changes was detected!"
-      # - name: "Run if no changes have been detected"
-      #   if: steps.auto-commit-action.outputs.changes_detected == 'false'
-      #   run: echo "No changes detected!"
+          npx update-template https://github.com/${{ env.TEMPLATE_REPO }}
+      - name: Commit changes
+        id: auto-commit-action
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: Updating repository from template
+      - name: "Run if changes have been detected"
+        if: steps.auto-commit-action.outputs.changes_detected == 'true'
+        run: echo "Changes was detected!"
+      - name: "Run if no changes have been detected"
+        if: steps.auto-commit-action.outputs.changes_detected == 'false'
+        run: echo "No changes detected!"
