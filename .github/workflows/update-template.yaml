@@ -51,8 +51,10 @@ jobs:
       - name: Install update-template
         shell: bash -l {0}
         run: |
+          which npm
           npm install -g update-template
       - name: Run update template
+        shell: bash -l {0}
         run: |
           which npx
           # npx update-template https://github.com/${{ env.TEMPLATE_REPO }}
