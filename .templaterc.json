@@ -2,7 +2,7 @@
     "files": [
         "recipe/*",
         "history/README.md",
-        ".github/**/*.yaml",
+        ".github/**/*",
         "environment.yaml"
     ]
 }

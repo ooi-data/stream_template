@@ -1,0 +1,23 @@
+name: Update from template
+
+on:
+  schedule:
+    - cron: "0 0 * * *"
+  workflow_dispatch:
+
+env:
+  TEMPLATE_REPO: ooi-data/stream_template
+
+jobs:
+  template-update:
+    name: Template Update
+    runs-on: ubuntu-20.04
+    if: github.repository != env.TEMPLATE_REPO
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.GH_PAT }}
+      - name: Install update-template
+        run: npm install -g update-template
+      - name: Run update template
+        run: npx update-template https://github.com/${{ env.TEMPLATE_REPO }}
