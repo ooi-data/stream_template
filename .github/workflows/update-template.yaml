@@ -13,7 +13,7 @@ jobs:
   template-update:
     name: Template Update
     runs-on: ubuntu-20.04
-    if: github.repository != 'ooi-data/stream_template'
+    # if: github.repository != 'ooi-data/stream_template'
     steps:
       - uses: actions/checkout@v2
         with:
