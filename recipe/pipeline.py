@@ -91,7 +91,15 @@ def main(test_run, refresh, data_bucket, project_name, run_flow):
         ],
         image_tag=image_tag,
     )
-    run_options = {'env': {'GH_PAT': os.environ.get('GH_PAT', None)}}
+    run_options = {
+        'env': {
+            'GH_PAT': os.environ.get('GH_PAT', None),
+            'AWS_KEY': os.environ.get('AWS_KEY', None),
+            'AWS_SECRET': os.environ.get('AWS_SECRET', None),
+            'OOI_USERNAME': os.environ.get('OOI_USERNAME', None),
+            'OOI_TOKEN': os.environ.get('OOI_TOKEN', None),
+        }
+    }
 
     print("1) SETTING UP THE FLOW")
     pipeline = OOIStreamPipeline(
