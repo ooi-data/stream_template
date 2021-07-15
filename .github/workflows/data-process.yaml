@@ -68,7 +68,7 @@ jobs:
           GH_PAT: ${{ secrets.GH_PAT }}
         run: |
           # Login
-          prefect auth login --token ${{ secrets.PREFECT_TOKEN }}
+          prefect auth login --key ${{ secrets.PREFECT_TOKEN }}
 
           # Run flow
           python recipe/pipeline.py --run-flow --prefect-project ${{ env.PREFECT_PROJECT }}
