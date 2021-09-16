@@ -8,6 +8,7 @@ import yaml
 
 from ooi_harvester.producer.models import StreamHarvest
 from ooi_harvester.processor.pipeline import OOIStreamPipeline
+from ooi_harvester.processor.state_handlers import process_status_update
 
 from ooi_harvester.config import (
     CONFIG_PATH_STR,
@@ -110,6 +111,7 @@ def main(test_run, refresh, data_bucket, project_name, run_flow):
         run_config_type='kubernetes',
         storage_options=storage_options,
         run_config_options=run_options,
+        task_state_handlers=[process_status_update]
     )
     pipeline.flow.validate()
     print(pipeline)
