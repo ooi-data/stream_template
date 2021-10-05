@@ -121,6 +121,8 @@ def main(test_run, refresh, data_bucket, project_name, run_flow):
         storage_options=storage_options,
         run_config_options=run_options,
         task_state_handlers=[process_status_update],
+        data_availability=True,
+        da_config={'gh_write': True},
     )
     pipeline.flow.validate()
     print(pipeline)
