@@ -2,7 +2,10 @@
     "files": [
         "recipe/*",
         "history/README.md",
-        ".github/**/*",
+        ".github/workflows/data-check.yaml",
+        ".github/workflows/data-process.yaml",
+        ".github/workflows/data-request.yaml",
+        ".github/workflows/update-template.yaml",
         "environment.yaml"
     ]
 }
