@@ -154,7 +154,7 @@ def produce(data_check: bool, stream_harvest: StreamHarvest) -> dict:
                         table_name, request_dt, 'failed'
                     )
 
-        except ValueError:
+        except Exception:
             print("Stream not found in OOI Database.")
             request_response = {
                 "message": f"{table_name} not found in OOI Database. It may be that this stream has been discontinued."  # noqa
