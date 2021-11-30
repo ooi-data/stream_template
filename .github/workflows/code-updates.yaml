@@ -45,3 +45,5 @@ jobs:
           conda list
       - name: Run code updates
         run: python .ci-helpers/code-updates.py
+        env:
+          GH_PAT: ${{ secrets.GH_PAT }}

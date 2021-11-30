@@ -69,3 +69,5 @@ jobs:
             --goldcopy ${{ github.event.inputs.goldcopy }} \
             --test ${{ github.event.inputs.test }} \
             --debug ${{ github.event.inputs.debug }}
+        env:
+          GH_PAT: ${{ secrets.GH_PAT }}
