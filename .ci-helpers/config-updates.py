@@ -127,7 +127,9 @@ def parse_args():
     )
     parser.add_argument(
         '--repo',
+        nargs="?",
         type=str,
+        const=None,
         help='Specific repo to update config on',
     )
 

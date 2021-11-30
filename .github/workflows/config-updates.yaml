@@ -19,6 +19,9 @@ on:
         description: 'Not commit the changes'     
         required: true
         default: 'False'
+      repo:
+        description: 'Specific repo to update'     
+        required: false
 
 # github.event.inputs.refresh
 
@@ -68,6 +71,7 @@ jobs:
             --refresh ${{ github.event.inputs.refresh }} \
             --goldcopy ${{ github.event.inputs.goldcopy }} \
             --test ${{ github.event.inputs.test }} \
-            --debug ${{ github.event.inputs.debug }}
+            --debug ${{ github.event.inputs.debug }} \
+            --repo ${{ github.event.inputs.repo }}
         env:
           GH_PAT: ${{ secrets.GH_PAT }}
