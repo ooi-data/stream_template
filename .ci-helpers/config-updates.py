@@ -56,13 +56,13 @@ def config_update(repo, values, debug=True, force=False):
             print(f"Debug mode, updated config: {updated_config}")
             if not changes:
                 print("No changes found... skipping update.")
-            elif force:
-                print("Force flag found. No dispatching in debug mode.")
+                if force:
+                    print("Force flag found. No dispatching in debug mode.")
         else:
             if not changes:
                 print("No changes found... skipping update.")
-            elif force:
-                _dispatch_workflow(repo)
+                if force:
+                    _dispatch_workflow(repo)
             else:
                 process_status = repo.get_contents(
                     PROCESS_STATUS_PATH_STR,
