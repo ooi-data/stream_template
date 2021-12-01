@@ -12,6 +12,8 @@ from ooi_harvester.config import (
 )
 from gh_utils import print_rate_limiting_info
 
+INDEX_URL = "https://ooi-data.s3.us-west-2.amazonaws.com/index.json"
+
 
 def _str_to_bool(s):
     """Convert string to bool (in argparse context)."""
@@ -155,6 +157,14 @@ def parse_args():
         default=False,
         help='Force dispatch data request even if there is no changes.',
     )
+    parser.add_argument(
+        '--from-index',
+        type=_str_to_bool,
+        nargs="?",
+        const=False,
+        default=False,
+        help='Only update from ooi-data index',
+    )
 
     return parser.parse_args()
 
@@ -177,6 +187,25 @@ def main():
             config_update(repo, values, debug=args.debug, force=args.force)
         except Exception:
             raise ValueError(f"{args.repo} repository does not exist.")
+    elif args.from_index is True:
+        import requests
+        import itertools as it
+
+        resp = requests.get(INDEX_URL)
+        data_index = resp.json()
+
+        sorted_streams = sorted(
+            it.chain.from_iterable(
+                map(lambda i: i['streams'], data_index['instruments'])
+            ),
+            key=lambda s: s['bytes_size'],
+        )
+        for stream in sorted_streams:
+            try:
+                repo = data_org.get_repo(stream['id'])
+                config_update(repo, values, debug=args.debug, force=args.force)
+            except Exception:
+                raise ValueError(f"{stream['id']} repository does not exist.")
     else:
         for repo in data_org.get_repos():
             if repo.name != 'stream_template':
