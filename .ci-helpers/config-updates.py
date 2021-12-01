@@ -33,7 +33,18 @@ def _update_config(current_config_json, value={}):
     return updated_config, changes
 
 
-def config_update(repo, values, debug=True):
+def _dispatch_workflow(repo, workflow='Data Request'):
+    request_wf = next(wf for wf in repo.get_workflows() if wf.name == workflow)
+    queued = request_wf.get_runs(status='queued').get_page(0)
+    in_progress = request_wf.get_runs(status='in_progress').get_page(0)
+    if len(queued) > 0 or len(in_progress) > 0:
+        print(f"Skipping {workflow} run for {repo.name}, already in progress")
+    else:
+        print(f"Starting {workflow} for {repo.name}")
+        request_wf.create_dispatch(harvest_settings.github.main_branch)
+
+
+def config_update(repo, values, debug=True, force=False):
     try:
         print(repo.name)
         config = repo.get_contents(
@@ -45,9 +56,13 @@ def config_update(repo, values, debug=True):
             print(f"Debug mode, updated config: {updated_config}")
             if not changes:
                 print("No changes found... skipping update.")
+            elif force:
+                print("Force flag found. No dispatching in debug mode.")
         else:
             if not changes:
                 print("No changes found... skipping update.")
+            elif force:
+                _dispatch_workflow(repo)
             else:
                 process_status = repo.get_contents(
                     PROCESS_STATUS_PATH_STR,
@@ -132,6 +147,14 @@ def parse_args():
         const=None,
         help='Specific repo to update config on',
     )
+    parser.add_argument(
+        '--force',
+        type=_str_to_bool,
+        nargs="?",
+        const=False,
+        default=False,
+        help='Force dispatch data request even if there is no changes.',
+    )
 
     return parser.parse_args()
 
@@ -151,13 +174,13 @@ def main():
     if args.repo:
         try:
             repo = data_org.get_repo(args.repo)
-            config_update(repo, values, args.debug)
+            config_update(repo, values, debug=args.debug, force=args.force)
         except Exception:
             raise ValueError(f"{args.repo} repository does not exist.")
     else:
         for repo in data_org.get_repos():
             if repo.name != 'stream_template':
-                config_update(repo, values, args.debug)
+                config_update(repo, values, debug=args.debug, force=args.force)
 
 
 if __name__ == "__main__":
