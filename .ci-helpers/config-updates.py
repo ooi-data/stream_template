@@ -205,7 +205,8 @@ def main():
                 repo = data_org.get_repo(stream['id'])
                 config_update(repo, values, debug=args.debug, force=args.force)
             except Exception:
-                raise ValueError(f"{stream['id']} repository does not exist.")
+                print(f"{stream['id']} repository does not exist.")
+                pass
     else:
         for repo in data_org.get_repos():
             if repo.name != 'stream_template':
