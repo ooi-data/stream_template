@@ -1,11 +1,12 @@
 import os
 import yaml
+import datetime
 from pathlib import Path
 from prefect import Flow
 from prefect.schedules import CronSchedule
 from prefect.tasks.prefect import create_flow_run, wait_for_flow_run
 from prefect.run_configs.ecs import ECSRun
-from prefect.storage.git import Git
+from prefect.storage.docker import Docker
 from ooi_harvester.settings.main import harvest_settings
 
 HERE = Path(__file__).resolve().parent
@@ -39,8 +40,12 @@ flow_run_name = "-".join(
 schedule = CronSchedule(config_json['workflow_config']['schedule'])
 run_config = ECSRun(**RUN_OPTIONS)
 
+parent_run_opts = dict(**RUN_OPTIONS)
+parent_run_opts.update({'cpu': '0.25 vcpu', 'memory': '0.5 GB'})
+parent_run_config = ECSRun(**parent_run_opts)
+
 with Flow(
-    flow_run_name, schedule=schedule, run_config=run_config
+    flow_run_name, schedule=schedule, run_config=parent_run_config
 ) as parent_flow:
     flow_run = create_flow_run(
         flow_name="stream_harvest",
@@ -56,10 +61,19 @@ with Flow(
     )
     wait_for_flow = wait_for_flow_run(flow_run, raise_final_state=True)  # noqa
 
-parent_flow.storage = Git(
-    repo=f"{data_org}/{flow_run_name}",
-    flow_path="recipe/flow.py",
-    repo_host="github.com",
-    git_token_secret_name="GH_PAT",
-    git_token_username="ooi-data-bot"
+now = datetime.datetime.utcnow()
+image_registry = "cormorack"
+image_name = "harvest"
+image_tag = f"{flow_run_name}.{now:%Y%m%dT%H%M}"
+
+parent_flow.storage = Docker(
+    registry_url=image_registry,
+    dockerfile=HERE.joinpath("Dockerfile"),
+    image_name=image_name,
+    prefect_directory="/home/jovyan/prefect",
+    env_vars={'HARVEST_ENV': 'ooi-harvester'},
+    python_dependencies=[
+        'git+https://github.com/ooi-data/ooi-harvester.git@main'
+    ],
+    image_tag=image_tag,
 )
