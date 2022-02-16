@@ -53,9 +53,6 @@ jobs:
           conda list
       - name: Run flow registration
         shell: bash -l {0}
-        env:
-          TASK_ROLE_ARN: ${{ secrets.TASK_ROLE_ARN }}
-          EXECUTION_ROLE_ARN: ${{ secrets.EXECUTION_ROLE_ARN }}
         run: |
           # Make prefect dir
           mkdir ~/.prefect

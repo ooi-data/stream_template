@@ -19,8 +19,6 @@ RUN_OPTIONS = {
     'cpu': '2 vcpu',
     'memory': '16 GB',
     'labels': ['ecs-agent', 'ooi', 'prod'],
-    'task_role_arn': os.environ.get('TASK_ROLE_ARN', None),
-    'execution_role_arn': os.environ.get('EXECUTION_ROLE_ARN', None),
     'run_task_kwargs': {
         'cluster': 'prefectECSCluster',
         'launchType': 'FARGATE',
