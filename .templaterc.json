@@ -6,6 +6,7 @@
         ".github/workflows/data-process.yaml",
         ".github/workflows/data-request.yaml",
         ".github/workflows/update-template.yaml",
+        ".github/workflows/register-flow.yaml",
         "environment.yaml"
     ]
 }
