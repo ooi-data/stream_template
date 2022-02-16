@@ -8,7 +8,8 @@ from prefect.run_configs.ecs import ECSRun
 from prefect.storage.git import Git
 from ooi_harvester.settings.main import harvest_settings
 
-BASE = Path('.').parent.absolute()
+HERE = Path(__file__).resolve().parent
+BASE = HERE.parent
 CONFIG_PATH = BASE.joinpath(harvest_settings.github.defaults.config_path_str)
 RUN_OPTIONS = {
     'env': {
@@ -38,12 +39,8 @@ flow_run_name = "-".join(
 schedule = CronSchedule(config_json['workflow_config']['schedule'])
 run_config = ECSRun(**RUN_OPTIONS)
 
-# Set the default parent run config image
-RUN_OPTIONS.setdefault("image", "cormorack/prefect:0.15.13-python3.8")
-parent_run_config = ECSRun(**RUN_OPTIONS)
-
 with Flow(
-    flow_run_name, schedule=schedule, run_config=parent_run_config
+    flow_run_name, schedule=schedule, run_config=run_config
 ) as parent_flow:
     flow_run = create_flow_run(
         flow_name="stream_harvest",
