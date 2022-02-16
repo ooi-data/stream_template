@@ -76,4 +76,5 @@ parent_flow.storage = Docker(
         'git+https://github.com/ooi-data/ooi-harvester.git@main'
     ],
     image_tag=image_tag,
+    build_kwargs={'nocache': True}
 )
