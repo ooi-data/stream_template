@@ -39,7 +39,9 @@ flow_run_name = "-".join(
 )
 schedule = CronSchedule(config_json['workflow_config']['schedule'])
 run_config = ECSRun(**RUN_OPTIONS)
-with Flow(flow_run_name, schedule=schedule) as parent_flow:
+with Flow(
+    flow_run_name, schedule=schedule, run_config=run_config
+) as parent_flow:
     flow_run = create_flow_run(
         flow_name="stream_harvest",
         run_name=flow_run_name,
