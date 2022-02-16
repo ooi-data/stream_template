@@ -41,7 +41,7 @@ schedule = CronSchedule(config_json['workflow_config']['schedule'])
 run_config = ECSRun(**RUN_OPTIONS)
 
 parent_run_opts = dict(**RUN_OPTIONS)
-parent_run_opts.update({'cpu': '0.25 vcpu', 'memory': '0.5 GB'})
+parent_run_opts.update({'cpu': '0.5 vcpu', 'memory': '2 GB'})
 parent_run_config = ECSRun(**parent_run_opts)
 
 with Flow(
