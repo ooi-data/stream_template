@@ -60,4 +60,6 @@ parent_flow.storage = Git(
     repo=f"{data_org}/{flow_run_name}",
     flow_path="recipe/flow.py",
     repo_host="github.com",
+    git_token_secret_name="GH_PAT",
+    git_token_username="ooi-data-bot"
 )
