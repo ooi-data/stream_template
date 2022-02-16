@@ -5,7 +5,7 @@ from prefect import Flow
 from prefect.schedules import CronSchedule
 from prefect.tasks.prefect import create_flow_run, wait_for_flow_run
 from prefect.run_configs.ecs import ECSRun
-from prefect.storage.github import GitHub
+from prefect.storage.git import Git
 from ooi_harvester.settings.main import harvest_settings
 
 BASE = Path('.').parent.absolute()
@@ -59,7 +59,8 @@ with Flow(
     )
     wait_for_flow = wait_for_flow_run(flow_run, raise_final_state=True)  # noqa
 
-parent_flow.storage = GitHub(
+parent_flow.storage = Git(
     repo=f"{data_org}/{flow_run_name}",
-    path="recipe/flow.py",
+    flow_path="recipe/flow.py",
+    repo_host="github.com",
 )
