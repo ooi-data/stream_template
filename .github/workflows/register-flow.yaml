@@ -1,18 +1,11 @@
-name: Data Processing
+name: Pipeline Registration
 
 on:
   push:
     paths:
-      - "history/request.yaml"
-      - "**/data-process.yaml"
-    branches:
-      - "main"
+      - "config.yaml"
+      - "recipe/flow.py"
   workflow_dispatch:
-    inputs:
-      testMessage:
-        description: 'Test Commit Message'     
-        required: true
-        default: 'No message here'
 
 env:
   PYTHON_VERSION: 3.8
@@ -20,10 +13,10 @@ env:
   PREFECT_PROJECT: ooi-harvest
 
 jobs:
-  data-process:
-    name: Data Processing
+  register:
+    name: Register Prefect Flow
     runs-on: ubuntu-20.04
-    if: "contains(github.event.head_commit.message, '[success]') || contains(github.event.inputs.testMessage, '[success]')"
+    if: github.repository != 'ooi-data/stream_template'
     steps:
       - uses: actions/checkout@v2
         with:
@@ -58,14 +51,11 @@ jobs:
         run: |
           conda info
           conda list
-      - name: Run processing pipeline
+      - name: Run flow registration
         shell: bash -l {0}
         env:
-          AWS_KEY: ${{ secrets.AWS_KEY }}
-          AWS_SECRET: ${{ secrets.AWS_SECRET }}
-          OOI_USERNAME: ${{ secrets.OOI_USERNAME }}
-          OOI_TOKEN: ${{ secrets.OOI_TOKEN }}
-          GH_PAT: ${{ secrets.GH_PAT }}
+          TASK_ROLE_ARN: ${{ secrets.TASK_ROLE_ARN }}
+          EXECUTION_ROLE_ARN: ${{ secrets.EXECUTION_ROLE_ARN }}
         run: |
           # Make prefect dir
           mkdir ~/.prefect
@@ -74,4 +64,4 @@ jobs:
           prefect auth login --key ${{ secrets.PREFECT_TOKEN }}
 
           # Run flow
-          python recipe/pipeline.py --run-flow --prefect-project ${{ env.PREFECT_PROJECT }}
+          prefect register -p recipe/flow.py --project ${{ env.PREFECT_PROJECT }}
