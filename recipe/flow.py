@@ -16,6 +16,7 @@ RUN_OPTIONS = {
     'env': {
         'PREFECT__CLOUD__HEARTBEAT_MODE': 'thread',
     },
+    'task_role_arn': os.environ.get('TASK_ROLE_ARN', None),
     'cpu': '2 vcpu',
     'memory': '16 GB',
     'labels': ['ecs-agent', 'ooi', 'prod'],
